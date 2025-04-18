@@ -1,4 +1,4 @@
-module Lib where
+module Child.Lib where
 
 import Prelude
 
