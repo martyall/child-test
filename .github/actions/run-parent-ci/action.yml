@@ -85,14 +85,27 @@ runs:
           body: `Updates the submodule to commit ${{ steps.commit-push.outputs.submodule_sha }} from run ${process.env.GITHUB_RUN_ID}`,
         });
         
-        console.log(`PR number: ${pr.data.number}`);
-        process.env.PR_NUMBER = pr.data.number.toString();
-        return pr.data.number;
+        const prNumber = pr.data.number;
+        const prUrl = pr.data.html_url;
+        
+        console.log(`PR created: ${prUrl}`);
+        console.log(`You can monitor the workflows triggered by this PR at:`);
+        console.log(`https://github.com/${{ inputs.owner }}/${{ inputs.parent_repository }}'.split('/')[1].trim()/actions`);
+        
+        process.env.PR_NUMBER = prNumber.toString();
+        process.env.PR_URL = prUrl;
+        
+        return { pr_number: prNumber, pr_url: prUrl };
   
-  - name: Set PR number environment variable
+  - name: Set PR info in environment
     if: steps.commit-push.outputs.status == 'changed'
     shell: bash
-    run: echo "PR_NUMBER=${{ steps.create-pr.outputs.result }}" >> $GITHUB_ENV
+    run: |
+      echo "PR_NUMBER=${{ fromJSON(steps.create-pr.outputs.result).pr_number }}" >> $GITHUB_ENV
+      echo "PR_URL=${{ fromJSON(steps.create-pr.outputs.result).pr_url }}" >> $GITHUB_ENV
+      
+      echo "::notice::Pull Request created: ${{ fromJSON(steps.create-pr.outputs.result).pr_url }}"
+      echo "::notice::You can monitor the parent repository workflows at: https://github.com/${{ inputs.owner }}/${{ inputs.parent_repository }}"
   
   - name: Add labels
     if: steps.commit-push.outputs.status == 'changed'
