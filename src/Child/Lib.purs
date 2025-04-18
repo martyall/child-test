@@ -3,4 +3,4 @@ module Child.Lib where
 import Prelude
 
 f :: Int -> Int
-f x = x + 1
+f x = x + 2
