@@ -81,7 +81,7 @@ runs:
           repo: '${{ inputs.parent_repository }}'.split('/')[1].trim(),
           head: process.env.GITHUB_RUN_ID,
           base: '${{ inputs.pr_against_branch }}',
-          title: `[Auto-generated] Update submodule to ${{ steps.commit-push.outputs.submodule_sha }}`,
+          title: `[DO NOT MERGE] [Auto-generated] Update submodule to ${{ steps.commit-push.outputs.submodule_sha }}`,
           body: `Updates the submodule to commit ${{ steps.commit-push.outputs.submodule_sha }} from run ${process.env.GITHUB_RUN_ID}`,
         });
         
