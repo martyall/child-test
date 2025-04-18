@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Update Parent Repository
-        uses: ./path/to/action
+        uses: .github/actions/run-parent-ci/action.yml
         with:
           github_token: ${{ secrets.PARENT_REPO_PAT }}
           parent_repository: 'martyall/parent-test'
