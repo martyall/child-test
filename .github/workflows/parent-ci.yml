@@ -1,0 +1,25 @@
+name: Update Parent Repository
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+
+jobs:
+  update-parent-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: Update Parent Repository
+        uses: ./path/to/action
+        with:
+          github_token: ${{ secrets.PARENT_REPO_PAT }}
+          parent_repository: 'martyall/parent-test'
+          checkout_branch: 'main'
+          pr_against_branch: 'main'
+          owner: 'martyall'
+          label: 'submodule-update'
