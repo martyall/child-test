@@ -51,6 +51,11 @@ runs:
       git config user.name github-actions
       git config user.email github-actions@github.com
       git submodule update --remote
+      
+      # Get the short commit SHA
+      SUBMODULE_SHA=$(cd child-test && git rev-parse --short HEAD)
+      echo "submodule_sha=$SUBMODULE_SHA" >> $GITHUB_OUTPUT
+      
       git checkout -b $GITHUB_RUN_ID
       
       # Check if there are changes to commit
@@ -59,7 +64,7 @@ runs:
         echo "No changes to submodules detected."
         exit 0
       else
-        git commit -am "updating submodules"
+        git commit -am "updating submodules to $SUBMODULE_SHA"
         git push --set-upstream origin $GITHUB_RUN_ID
         echo "status=changed" >> $GITHUB_OUTPUT
       fi
@@ -76,8 +81,8 @@ runs:
           repo: '${{ inputs.parent_repository }}'.split('/')[1].trim(),
           head: process.env.GITHUB_RUN_ID,
           base: '${{ inputs.pr_against_branch }}',
-          title: `[Auto-generated] Submodule Updates ${process.env.GITHUB_RUN_ID}`,
-          body: `[Auto-generated] Submodule Updates ${process.env.GITHUB_RUN_ID}`,
+          title: `[Auto-generated] Update submodule to ${{ steps.commit-push.outputs.submodule_sha }}`,
+          body: `Updates the submodule to commit ${{ steps.commit-push.outputs.submodule_sha }} from run ${process.env.GITHUB_RUN_ID}`,
         });
         
         console.log(`PR number: ${pr.data.number}`);
